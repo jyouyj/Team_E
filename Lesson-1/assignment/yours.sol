@@ -7,9 +7,9 @@ contract Payroll{
     address owner;
     address employee = 0xca35b7d915458ef540ade6068dfe2f44e8fa733c;
     uint salary = 1 ether;
-    uint lastPayDay;
+    uint lastPayDay = now;
     
-    function Payroll(){
+    function Payroll() payable {
         owner = msg.sender;
     }
     
