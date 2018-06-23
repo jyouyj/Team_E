@@ -32,7 +32,10 @@
 
 优化的想法非常直接。
 (1) 我们把totalSalary设为状态变量，它将保存记录在smart contract里;
+
 (2) 我们增加一个bool salaryModified; 当salary发生任何变化时候，我们可以把salaryModified = true; 
+
+(3) 只有当salaryModified变化时候我们才重新计算totalSalary，没变化时候直接沿用上次的计算结果。
 
 contract Payroll {
 
