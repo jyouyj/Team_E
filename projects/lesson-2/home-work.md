@@ -2,7 +2,7 @@
 
 1) 调用calculateRunway 10次 Gas的消耗情况:
 
-序号	execution cost		transaction cost	
+序号	 execution cost		transaction cost	
 
 +1	    1726		          22998	
 
