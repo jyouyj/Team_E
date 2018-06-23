@@ -35,23 +35,28 @@
 (2) 我们增加一个bool salaryModified; 当salary发生任何变化时候，我们可以把salaryModified = true; 
 
 contract Payroll {
+
      uint totalSalary;
      bool salaryModified;
      ...
+     
      function Payroll() payable public {
         owner = msg.sender;
         totalSalary = 0;
         salaryModified = true;
     }
+    
     function addEmployee(address employeeAddress, uint salary) public {
         ...
         salaryModified = true;
     }
+    
     function removeEmployee(address employeeId) public {
         ...
         salaryModified = true;
         _partialPay(previousInfo);
     }
+    
     function updateEmployee(address employeeAddress, uint salary) public {
         ...
         salaryModified = true;
