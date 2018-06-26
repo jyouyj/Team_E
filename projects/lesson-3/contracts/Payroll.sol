@@ -42,7 +42,6 @@ contract Payroll is Ownable {
     }
     
     modifier checkValidAddress(address oldAddress, address newAddress)  {
-        //require(msg.sender == oldAddress);
         require(oldAddress != newAddress);
         _;
     }
