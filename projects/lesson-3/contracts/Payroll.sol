@@ -17,8 +17,8 @@ contract Payroll is Ownable {
         uint lastPayDay;
     }
 
-    uint constant payDuration = 30 days;
-    //uint constant payDuration = 5 seconds;
+    //uint constant payDuration = 30 days;
+    uint constant payDuration = 5 seconds;
 
     uint public totalSalary;
     
@@ -30,19 +30,19 @@ contract Payroll is Ownable {
     
     modifier employeeExist(address employeeAddress) {
         var employee = employees[employeeAddress];
-        assert(employee.id != 0x0);
+        assert(employee.id != address(0));
         _;
     }
     
     modifier addressNotExist(address employeeAddress) {
-        require(employeeAddress != 0x0);
+        require(employeeAddress != address(0));
         var employee = employees[employeeAddress];
-        assert(employee.id == 0x0);
+        assert(employee.id == address(0));
         _;
     }
     
     modifier checkValidAddress(address oldAddress, address newAddress)  {
-        require(msg.sender == oldAddress);
+        //require(msg.sender == oldAddress);
         require(oldAddress != newAddress);
         _;
     }
@@ -56,8 +56,8 @@ contract Payroll is Ownable {
              public 
              onlyOwner 
              addressNotExist(employeeAddress) {
-    
-        employees[employeeAddress] = Employee(employeeAddress, 1 ether * salary, now);
+        require(salary > 0 && salary < uint(-1));
+        employees[employeeAddress] = Employee(employeeAddress, salary.mul(1 ether), now);
         totalSalary = totalSalary.add(employees[employeeAddress].salary);
     }
 
@@ -80,12 +80,12 @@ contract Payroll is Ownable {
     
     //Change the payment address of employees
     //There are three modifiers
-    //1) msg.sender must be an existing address
+    //1) msg.sender must be the owner
     //2) newAddress can not be empty and it should be an existing address
     //3) msg.sender == oldAddress && oldAddress == msg.sender
     function changePaymentAddress(address oldAddress, address newAddress) 
              public 
-             employeeExist(msg.sender)
+             onlyOwner
              addressNotExist(newAddress) 
              checkValidAddress(oldAddress, newAddress) {
         
@@ -102,13 +102,15 @@ contract Payroll is Ownable {
     function updateEmployee(address employeeAddress, uint salary) 
              public 
              onlyOwner employeeExist(employeeAddress) {
-                 
+        //salary > 0 and avoid overflow
+        require(salary > 0 && salary < uint(-1));
+        
         Employee memory employee = employees[employeeAddress];
         
         totalSalary = totalSalary.sub(employees[employeeAddress].salary);
-        employees[employeeAddress].salary = salary * 1 ether;
+        employees[employeeAddress].salary = salary.mul(1 ether);
         employees[employeeAddress].lastPayDay = now;
-        totalSalary = totalSalary.add(salary * 1 ether);
+        totalSalary = totalSalary.add(salary.mul(1 ether));
         
         //Partially pay the previous salary
         _partialPay(employee);
@@ -132,7 +134,7 @@ contract Payroll is Ownable {
     function hasEnoughFund() 
              public view 
              returns (bool) {
-        return calculateRunway() > 0;
+        return calculateRunway() >= totalSalary;
     }
 
     function getPaid() 
@@ -148,7 +150,7 @@ contract Payroll is Ownable {
     }
     
     function _partialPay(Employee employee) 
-             private {
+             internal {
         uint payment =  employee.salary.mul(now.sub(employee.lastPayDay))
                         .div(payDuration);
         employee.id.transfer(payment);
