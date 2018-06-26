@@ -55,7 +55,7 @@ contract Payroll is Ownable {
              public 
              onlyOwner 
              addressNotExist(employeeAddress) {
-        require(salary > 0 && salary < uint(-1));
+        require(int(salary) > 0);
         employees[employeeAddress] = Employee(employeeAddress, salary.mul(1 ether), now);
         totalSalary = totalSalary.add(employees[employeeAddress].salary);
     }
@@ -102,7 +102,7 @@ contract Payroll is Ownable {
              public 
              onlyOwner employeeExist(employeeAddress) {
         //salary > 0 and avoid overflow
-        require(salary > 0 && salary < uint(-1));
+        require(int(salary) > 0);
         
         Employee memory employee = employees[employeeAddress];
         
