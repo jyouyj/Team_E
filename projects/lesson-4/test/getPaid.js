@@ -1,3 +1,7 @@
+// Jie You asyn testing function for getPaid()
+// 06/29/2018
+
+// Build an object for Payroll
 var Payroll = artifacts.require("./Payroll.sol");
 
 contract('Payroll', function (accounts) {
@@ -9,18 +13,26 @@ contract('Payroll', function (accounts) {
   const payDuration = (30 + 1) * 86400;
   const fund = runway * salary;
 
+  
+
+  //The first test is to guarantee that getPaid() works well
+  //afterEth > previousEth + 0.95 * salary 
+  let previousEth = -1;
   it("Test getPaid()", function () {
     var payroll;
     return Payroll.new.call(owner, {from: owner, value: web3.toWei(fund, 'ether')}).then(instance => {
       payroll = instance;
       return payroll.addEmployee(employee, salary, {from: owner});
     }).then(() => {
+      previousEth = parseFloat(web3.fromWei( web3.eth.getBalance(employee).toNumber(), 'ether').toString());
+      assert.isAbove(previousEth, 0, "previousEth is updated")
       return payroll.calculateRunway();
     }).then(runwayRet => {
       if (!runwayRet.toNumber || typeof runwayRet.toNumber !== "function") {
         assert(false, "the function `calculateRunway()` should be defined as: `function calculateRunway() public view returns (uint)` | `calculateRunway()` 应定义为: `function calculateRunway() public view returns (uint)`");
       }
       assert.equal(runwayRet.toNumber(), runway, "Runway is wrong");
+      // Use the web3 to revise timestamp + paryDuration
       return web3.currentProvider.send({jsonrpc: "2.0", method: "evm_increaseTime", params: [payDuration], id: 0});
     }).then(() => {
       return payroll.getPaid({from: employee})
@@ -28,9 +40,15 @@ contract('Payroll', function (accounts) {
       return payroll.calculateRunway();
     }).then(runwayRet => {
       assert.equal(runwayRet.toNumber(), runway - 1, "The runway is not correct");
+    }).then(() => {
+      let afterEth = parseFloat(web3.fromWei( web3.eth.getBalance(employee).toNumber(), 'ether').toString());
+      //We use factor 0.95 to consider the gas fee
+      assert.isAbove(afterEth, previousEth + 0.95 * salary, "The employee can not get the payment");
     });
   });
 
+
+  //The second test is to gurantee that the employee can not get the payment before the payDuration
   it("Test getPaid() before duration", function () {
     var payroll;
     return Payroll.new.call(owner, {from: owner, value: web3.toWei(fund, 'ether')}).then(instance => {
@@ -48,6 +66,7 @@ contract('Payroll', function (accounts) {
     });
   });
 
+  // The third test is to gurantee that the getPaid() can not be called by the non-exist address  
   it("Test getPaid() by a non-employee", function () {
     var payroll;
     return Payroll.new.call(owner, {from: owner, value: web3.toWei(fund, 'ether')}).then(instance => {
@@ -65,3 +84,5 @@ contract('Payroll', function (accounts) {
     });
   });
 });
+
+
