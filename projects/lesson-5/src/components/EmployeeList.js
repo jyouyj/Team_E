@@ -33,7 +33,10 @@ class EmployeeList extends Component {
       showModal: false
     };
 
+<<<<<<< HEAD
     //This part code binds the address to the dynamic address
+=======
+>>>>>>> 061120abec0a425eab251db94fcfe525b101cbe7
     columns[1].render = (text, record) => (
       <EditableCell
         value={text}
@@ -50,7 +53,11 @@ class EmployeeList extends Component {
 
   componentDidMount() {
     const { payroll, account, web3 } = this.props;
+<<<<<<< HEAD
     payroll.getEmployerInfo.call({
+=======
+    payroll.checkInfo.call({
+>>>>>>> 061120abec0a425eab251db94fcfe525b101cbe7
       from: account
     }).then((result) => {
       const employeeCount = result[2].toNumber();
@@ -66,6 +73,7 @@ class EmployeeList extends Component {
   }
 
   loadEmployees(employeeCount) {
+<<<<<<< HEAD
     const {payroll, account, web3} = this.props;
     const requests = [];
     
@@ -148,6 +156,17 @@ class EmployeeList extends Component {
     //.catch(() => {
     //  message.error('You do not have enough money to call the removeEmployee function!');
     //});
+=======
+  }
+
+  addEmployee = () => {
+  }
+
+  updateEmployee = (address, salary) => {
+  }
+
+  removeEmployee = (employeeId) => {
+>>>>>>> 061120abec0a425eab251db94fcfe525b101cbe7
   }
 
   renderModal() {

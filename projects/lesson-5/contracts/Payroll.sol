@@ -60,7 +60,11 @@ contract Payroll is Ownable {
         employees[employeeId] = Employee(index, salary, now);
 
         totalSalary = totalSalary.add(salary);
+<<<<<<< HEAD
         //AddEmployee(msg.sender, employeeId, salary);
+=======
+        AddEmployee(msg.sender, employeeId, salary);
+>>>>>>> 061120abec0a425eab251db94fcfe525b101cbe7
     }
 
     function removeEmployee(address employeeId) public onlyOwner shouldExist(employeeId) {
@@ -81,7 +85,11 @@ contract Payroll is Ownable {
 
         // adjust length
         employeeAddressList.length -= 1;
+<<<<<<< HEAD
         //RemoveEmployee(msg.sender, employeeId);
+=======
+        RemoveEmployee(msg.sender, employeeId);
+>>>>>>> 061120abec0a425eab251db94fcfe525b101cbe7
     }
 
     function changePaymentAddress(address oldAddress, address newAddress) public onlyOwner shouldExist(oldAddress) shouldNotExist(newAddress) {
@@ -101,11 +109,19 @@ contract Payroll is Ownable {
         employees[employeeId].lastPayday = now;
         totalSalary = totalSalary.add(salary).sub(oldSalary);
 
+<<<<<<< HEAD
         //UpdateEmployee(msg.sender, employeeId, salary);
     }
 
     function addFund() payable public returns (uint) {
         //AddFund(msg.sender, msg.value);
+=======
+        UpdateEmployee(msg.sender, employeeId, salary);
+    }
+
+    function addFund() payable public returns (uint) {
+        AddFund(msg.sender, msg.value);
+>>>>>>> 061120abec0a425eab251db94fcfe525b101cbe7
         return address(this).balance;
     }
 
@@ -128,7 +144,11 @@ contract Payroll is Ownable {
 
         employees[employeeId].lastPayday = nextPayday;
         employeeId.transfer(employees[employeeId].salary);
+<<<<<<< HEAD
         //GetPaid(msg.sender, employees[employeeId].salary);
+=======
+        GetPaid(msg.sender, employees[employeeId].salary);
+>>>>>>> 061120abec0a425eab251db94fcfe525b101cbe7
     }
 
     function getEmployerInfo() view public returns (uint balance, uint runway, uint employeeCount) {
@@ -150,5 +170,8 @@ contract Payroll is Ownable {
         lastPayday = employees[id].lastPayday;
         balance = address(id).balance;
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 061120abec0a425eab251db94fcfe525b101cbe7
 }
