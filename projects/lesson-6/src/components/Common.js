@@ -9,17 +9,39 @@ class Common extends Component {
   }
 
   componentDidMount() {
-    const { payroll } = this.props;
-    const updateInfo = (error, result) => {
-      if (!error) {
-        this.getEmployerInfo();
+    const { payroll, web3 } = this.props;
+
+    
+     // 事件相关，暂不要求
+     
+      const updateInfo = (error, result) => {
+        if (!error) {
+          this.getEmployerInfo();
+        } else {
+          console.log(error);
+        }
       }
-    }
+
+      this.newFund = payroll.NewFund(updateInfo);
+      this.getPaid = payroll.GetPaid(updateInfo);
+      this.newEmployee = payroll.NewEmployee(updateInfo);
+      this.updateEmployee = payroll.UpdateEmployee(updateInfo);
+      this.removeEmployee = payroll.RemoveEmployee(updateInfo);
+     
 
     this.getEmployerInfo();
   }
 
   componentWillUnmount() {
+    
+     // 事件相关，暂不要求
+     
+      this.newFund.stopWatching();
+      this.getPaid.stopWatching();
+      this.newEmployee.stopWatching();
+      this.updateEmployee.stopWatching();
+      this.removeEmployee.stopWatching();
+     
   }
 
   getEmployerInfo = () => {
