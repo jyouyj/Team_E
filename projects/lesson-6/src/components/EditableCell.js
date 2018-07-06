@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { Input, Icon } from 'antd';
 
 class EditableCell extends React.Component {
